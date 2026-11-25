@@ -1,0 +1,109 @@
+The forcing is defined by $f=\partial_tu+\cA(\cdot)u$.  The point of the construction is the exact
+cancellation of each mode against the coefficient acting on the profile,
+\[
+  (\partial_t+A_{0,H})(y_{j,m}p_K)+\eps L_{\eta_jK^{-1}\sin\theta_{j,m}\cos(Kx)}(\rho\phi)=E_{j,m},
+\]
+with a remainder $E_{j,m}$ that is small in $H$ (\texttt{eq:exact-mode-cancellation}).
+
+\begin{lemma}[Exact cancellation and the equation pointwise]
+  \label{lem:cancellation}
+  \lean{LionsC12.mode_cancellation, LionsC12.pde, LionsC12.f, LionsC12.f0, LionsC12.E,
+    LionsC12.R, LionsC12.Lβv, LionsC12.Au}
+  \leanok
+  \uses{def:solution, lem:coefficient-profile}
+  The identity above holds for every mode, and summing gives
+  $f=f_0+R+\eps L_{\beta}v$ (\texttt{eq:f-decomposition}); pointwise,
+  $\partial_tu(t,x)-\partial_x(\fra\partial_xu)(t,x)=f(t,x)$ for every $(t,x)$.
+\end{lemma}
+
+\begin{proof}
+  \leanok
+  Lemma~\ref{lem:oscillatory-modes}, Lemma~\ref{lem:coefficient-profile} and the ODE for $y_{j,m}$.
+\end{proof}
+
+\begin{lemma}[$u(t)$ lies in the domain of $A_H(t)$]
+  \label{lem:domain-membership}
+  \lean{LionsC12.AuH, LionsC12.form_uV, LionsC12.integrableOn_AuH, LionsC12.not_memLp_AuH,
+    LionsC12.AH_u_L1_not_L2, LionsC12.not_integrableOn_normSq_Au}
+  \leanok
+  \uses{def:solution, def:lions-solution, prop:forcing, lem:solution-regularity}
+  For every $t$, $\fra(t)[u(t),w]=\langle-\partial_x(\fra\partial_xu)(t),w\rangle_H$ for all $w\in V$, so
+  $u(t)\in D(A_H(t))$; and $A_H(\cdot)u(\cdot)\in\Leb^1(0,1;H)\setminus\Leb^2(0,1;H)$.
+\end{lemma}
+
+\begin{proof}
+  \leanok
+  Integration by parts in $V$ against the $\C^1$ flux $\fra\partial_xu(t)$.  Then
+  $A_Hu=f-\partial_tu$ with $f\in\C([0,1];H)$ (Proposition~\ref{prop:forcing}) and
+  $\partial_tu\in\Leb^1\setminus\Leb^2$ (Lemma~\ref{lem:solution-regularity}).
+\end{proof}
+
+\begin{proposition}[Continuous $H$-valued forcing]
+  \label{prop:forcing}
+  \lean{LionsC12.fH, LionsC12.continuous_fH, LionsC12.im_fH, LionsC12.utH_add_AuH,
+    LionsC12.equation_uV, LionsC12.isLionsSolution_uV, LionsC12.eq_uV_of_isLionsSolution}
+  \leanok
+  \uses{lem:cancellation, lem:solution-regularity, prop:coefficient, lem:lions-uniqueness}
+  $f\in\C([0,1];H)$, and $\partial_tu(t)+\cA(t)u(t)=f(t)$ in $V'$ for every $t\in[0,1]$.
+\end{proposition}
+
+\textbf{Lean form.}  $f$ is jointly continuous on $\R^2$ and $\C([0,1];H)$ is deduced from it;
+the equation in $V'$ holds for every $t\in\R$.  In addition, \texttt{isLionsSolution\_uV} places
+$u$ in the Lions class and \texttt{eq\_uV\_of\_isLionsSolution} records uniqueness.
+
+\begin{proof}
+  \leanok
+  $\norm{R_j(t)}_H\leq C\eps\ell_j$ and the supports are disjoint, so $R$ is continuous into $H$.
+  On block $j$, $\norm{\beta}_\infty\leq S_j$, $\norm{\partial_x\beta}_\infty\leq M_j$,
+  $\norm{\partial_xv}_H\leq C\eps S_j$ and $\norm{\partial_x^2v}_H\leq C\eps M_j$, so
+  $\norm{\eps L_\beta v}_H\leq C\eps^2M_jS_j\leq C\eps^2/(j+1)$, and the block terms, continuous
+  with disjoint supports, sum to an element of $\C([0,1];H)$.  The equation in $V'$ is
+  Lemma~\ref{lem:cancellation} tested against $w\in V$, by Lemma~\ref{lem:domain-membership}.
+\end{proof}
+
+\begin{remark}[Growth of the maximal-regularity constant]
+  \label{rem:growth}
+  \lean{LionsC12.aN, LionsC12.uN, LionsC12.uNV, LionsC12.fNH, LionsC12.IsMaxRegConstant,
+    LionsC12.maxRegConstant_growth, LionsC12.maximal_regularity_constant_growth,
+    LionsC12.integral_normSq_fN_le, LionsC12.truncation_maximal_regularity,
+    LionsC12.truncation_maxReg_growth, LionsC12.truncation_optimalMaxRegConstant,
+    LionsC12.isMaxRegConstant_of_C1}
+  \leanok
+  \uses{prop:coefficient, lem:solution-regularity, prop:forcing, prop:frozen-domains,
+    thm:lions-garding, lem:lions-uniqueness}
+  For $N\in\N$ let $\fra_N=1+\eps\sum_{j\leq N}\beta_j$, $u_N=\rho\phi+\sum_{j\leq N}v_j$ and
+  $f_N=\partial_tu_N+\cA_N(t)u_N$.  The problem associated with $\cA_N$ has maximal
+  $\Leb^2$-regularity.  Moreover
+  $\sup_N\norm{\fra_N-1}_{\C^{0,1/2}([0,1];\Leb^\infty)}\leq C\eps$,
+  $\sup_N\norm{f_N}_{\Leb^2(0,1;H)}<\infty$, and
+  $\norm{\partial_tu_N}^2_{\Leb^2(0,1;H)}\geq c\eps^2\log(N+1)$; so every maximal-regularity
+  constant $C_N$ of $\fra_N$ satisfies $C_N\geq c\eps\sqrt{\log(N+1)}$.
+\end{remark}
+
+\textbf{Lean form.}  The explicit constants are $c=\pi/1536$ and
+$\norm{\partial_tu_N}^2_{\Leb^2(0,1;H)}\geq\frac{\pi\eps^2}{1536}(\log(N+2)-1)$.  A
+maximal-regularity constant of $\fra_N$ (\texttt{IsMaxRegConstant}) is a $C$ with
+$\norm{w'}_{\Leb^2(0,1;H)}+\norm{\cA_N w}_{\Leb^2(0,1;H)}\leq C\norm{g}_{\Leb^2(0,1;H)}$ for every
+Lions solution $w$ of $w'+\cA_Nw=g$, $w(0)=0$, whose derivative and elliptic part lie in
+$\Leb^2(0,1;H)$.  Maximal regularity of $\fra_N$ (\texttt{truncation\_maximal\_regularity}) is:
+for every $g\in\Leb^2(0,1;H)$ there is a Lions solution with derivative and elliptic part in
+$\Leb^2(0,1;H)$ and $\norm{w'}+\norm{\cA_Nw}\leq C\norm{g}$, and \texttt{IsMaxRegConstant} holds
+for that finite $C$; \texttt{truncation\_maxReg\_growth} combines it with the lower bound, and the
+best constant is attained (\texttt{truncation\_optimalMaxRegConstant}).  The paper argues from
+smoothness of the finite sums; Lean uses only that $\fra_N(t,\cdot)$ is $\C^1$ with
+$\abs{\partial_x\fra_N}\leq\eps\sum_{j\leq N}j$ uniformly in $t$, and applies Lions' theorem in the
+triple $D_0\subset V\subset D_0'$ with pivot $V$, $D_0=\Sob^2\cap\Sob^1_0$
+(Theorem~\ref{thm:lions-garding}): there $\re\langle\cA_N(t)u,(I+A_{0,H})u\rangle_H$ satisfies a
+Gårding inequality in the graph norm of $A_{0,H}$, the solution has its time derivative in
+$\Leb^2(0,1;H)$ because $I+A_{0,H}:D_0\to H$ is onto, and uniqueness of the Lions solution transfers
+the regularity to every solution.  No time regularity of $\fra_N$ is used; for the full
+coefficient the argument fails because $\sup_t\norm{\partial_x\fra(t)}_\infty=\infty$.  The constant
+is explicit but far from optimal.
+
+\begin{proof}
+  \leanok
+  Maximal regularity as described above.  For the lower bound, the bounds of
+  Proposition~\ref{prop:coefficient} and Proposition~\ref{prop:forcing} are uniform in $N$, and
+  the lower bound of Lemma~\ref{lem:solution-regularity} on the first $N$ blocks gives
+  $\sum_{j\leq N}\ell_jM_j\geq c\log(N+1)$.
+\end{proof}

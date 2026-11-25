@@ -1,0 +1,64 @@
+% Content of the blueprint, shared by the web and the print version.
+% Each chapter follows one section of the paper; the chapter files are in chapters/.
+% The paper is cited by its own statement numbers and LaTeX labels.
+
+\section*{The paper}
+
+This blueprint follows the paper \emph{Lions' maximal regularity problem for divergence-form
+differential operators: failure at the $\frac12$-H\"older endpoint} by Lukas Niebel
+(arXiv:2608.11194v2) section by section: Section~1 (introduction, Theorem~1.1 and
+Corollary~1.2), Section~2 (spatial oscillatory modes), Section~3 (time blocks, frequencies and
+the coefficient), Section~4 (the variational solution and its time derivative), Section~5
+(cancellation and the forcing), Section~6 (full-space and bounded-domain consequences) and
+Section~7 (comparison with endpoint hypotheses in the literature).  A last chapter records the
+part of Lions' theory that the formalisation proves, which the paper cites.  The paper is cited
+by its own statement numbers and LaTeX labels --- ``Theorem~1.1 of the paper'',
+``\texttt{eq:reciprocal-sums}'' --- and a \texttt{\textbackslash ref} inside the blueprint
+prints the \emph{blueprint's} number, which is in general not the paper's.
+
+\section*{Reading guide}
+
+\textbf{What the green marks mean.}  \texttt{\textbackslash leanok} on a \emph{statement}
+means that the Lean declarations named in that node's \texttt{\textbackslash lean} list exist in
+this repository, elaborate, and together say what the statement says; for a
+\texttt{definition} node it means that the Lean definition exists and formalises the object
+described.  \texttt{\textbackslash leanok} inside a \emph{proof} means that the Lean proofs of
+those declarations are complete --- no \texttt{sorry}, and no hypothesis that the paper does not
+also have or discharge.  Every statement of the blueprint carries a \texttt{\textbackslash lean}
+list and \texttt{\textbackslash leanok}, and so does every proof.  This includes every numbered
+statement of the paper except Remark~3.1 (\emph{Choice of the frequencies}), which makes no
+claim used later and has no Lean counterpart.  Theorem~\ref{thm:main} is
+\texttt{LionsC12.lions\_counterexample\_interval} and Corollary~\ref{cor:bounded-domains} is
+\texttt{LionsC12.lions\_counterexample\_domain}; both have the statements of
+\texttt{Challenge.lean}.
+
+\textbf{Where the differences are recorded.}  Every node whose Lean form differs from the
+paper's --- an explicit constant in place of ``$C$'', a pointwise estimate in place of an
+$\Leb^\infty$ one, a different route --- is followed by a paragraph \textbf{Lean form}, outside
+the theorem environment, that says exactly how.  Those paragraphs, not the statements, are where
+the differences are recorded; a green statement with no such paragraph is formalised as written.
+\texttt{DEVIATIONS.md} collects them.
+
+\chapter{Introduction: the theorems and their Lean statements}
+\input{chapters/main}
+
+\chapter{Spatial oscillatory modes}
+\input{chapters/modes}
+
+\chapter{Time blocks, frequencies, and the coefficient}
+\input{chapters/coefficient}
+
+\chapter{The variational solution and its time derivative}
+\input{chapters/solution}
+
+\chapter{Cancellation and the forcing}
+\input{chapters/forcing}
+
+\chapter{Full-space and bounded-domain consequences}
+\input{chapters/transfer}
+
+\chapter{Comparison with endpoint hypotheses in the literature}
+\input{chapters/endpoint}
+
+\chapter{Lions' theorem}
+\input{chapters/lions}

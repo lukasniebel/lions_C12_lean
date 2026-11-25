@@ -1,0 +1,37 @@
+cff-version: 1.2.0
+message: "If you use this formalisation, please cite it using the metadata below, together with the paper it formalises."
+type: software
+title: "LionsC12: a Lean 4 formalisation of 'Lions' maximal regularity problem for divergence-form differential operators: failure at the 1/2-Hölder endpoint'"
+abstract: >-
+  A machine-checked Lean 4 / Mathlib formalisation of a counterexample to maximal
+  L^2-regularity in Lions' problem for divergence-form operators: a real scalar diffusion
+  coefficient, 1/2-Hölder continuous in time with values in L^infinity and arbitrarily close
+  to 1, for which the unique Lions variational solution with zero initial value and a
+  continuous L^2-valued forcing has a time derivative that is not square integrable, on an
+  interval and on every bounded domain of every dimension.
+authors:
+  - family-names: Niebel
+    given-names: Lukas
+    affiliation: "ETH Zürich, Department of Mathematics"
+repository-code: "https://github.com/lukasniebel/lions_C12_lean"
+license: Apache-2.0
+keywords:
+  - Lean 4
+  - Mathlib
+  - formalisation
+  - maximal regularity
+  - Lions' problem
+  - non-autonomous parabolic equations
+  - divergence-form operators
+references:
+  - type: article
+    title: "Lions' Maximal Regularity Problem for Divergence-Form Differential Operators: Failure at the 1/2-Hölder Endpoint"
+    authors:
+      - family-names: Niebel
+        given-names: Lukas
+    year: 2026
+    identifiers:
+      - type: other
+        value: "arXiv:2608.11194v2"
+        description: "arXiv preprint"
+    url: "https://arxiv.org/abs/2608.11194v2"

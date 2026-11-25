@@ -1,0 +1,94 @@
+The paper uses Lions' theorem for uniqueness: the forms are measurable, uniformly bounded and
+uniformly coercive, so the variational problem with zero initial value has at most one solution
+in $\Leb^2(0,1;V)\cap\Sob^1(0,1;V')$.  This chapter records the part of Lions' theory that the
+formalisation proves.  It is not in the paper, which cites it.
+
+\section{The abstract theory on real Gelfand triples}
+
+\begin{definition}[Gelfand triples, form families and variational solutions]
+  \label{def:gelfand}
+  \lean{LionsC12.GelfandTriple, LionsC12.IsFormFamily, LionsC12.IsVariationalSolution}
+  \leanok
+  Real Hilbert spaces $V\hookrightarrow H$ with a dense continuous injection, a strongly
+  measurable family of uniformly bounded, uniformly coercive bilinear forms on $V$, and the
+  variational formulation of $u'+\cA(t)u=f$, $u(0)=u_0$, tested against $\C^1$ functions
+  $\varphi:[0,T]\to V$ with $\varphi(T)=0$.
+\end{definition}
+
+\begin{theorem}[Lions' theorem]
+  \label{thm:lions}
+  \lean{LionsC12.lions_projection, LionsC12.lions_existence, LionsC12.lions_magenes,
+    LionsC12.lions_uniqueness, LionsC12.lions_theorem, LionsC12.variational_continuous}
+  \leanok
+  \uses{def:gelfand}
+  For $f\in\Leb^2(0,T;V')$ and $u_0\in H$ the variational problem has a unique solution
+  $u\in\Leb^2(0,T;V)$, and $u$ has a representative in $\C([0,T];H)$ with $u(0)=u_0$.
+\end{theorem}
+
+\begin{proof}
+  \leanok
+  Existence by Lions' projection theorem (a Lax--Milgram theorem for a form continuous on a
+  Hilbert space and coercive on a pre-Hilbert subspace).  Uniqueness by the Lions--Magenes
+  energy identity $\norm{u(t)}_H^2=\norm{u(0)}_H^2+2\int_0^t\langle u',u\rangle$, proved with
+  Steklov averages.
+\end{proof}
+
+\begin{theorem}[Lions' theorem under a Gårding inequality]
+  \label{thm:lions-garding}
+  \lean{LionsC12.lions_existence_garding}
+  \leanok
+  \uses{thm:lions}
+  If the forms satisfy the Gårding inequality
+  $\alpha\norm{v}_V^2\leq a(t)[v,v]+\lambda\norm{v}_H^2$, $\lambda\geq0$, instead of coercivity, the
+  variational problem still has a solution $u\in\Leb^2(0,T;V)$, with
+  $\norm{u}_{\Leb^2(0,T;V)}\leq\mathrm{e}^{\lambda T}(\norm{f}_{\Leb^2(0,T;V')}+\norm{u_0}_H)/\min\{\frac12,\alpha\}$.
+\end{theorem}
+
+\begin{proof}
+  \leanok
+  The exponential shift $u(t)=\mathrm{e}^{\lambda t}\tilde u(t)$ reduces to coercive forms
+  $a(t)+\lambda\langle\cdot,\cdot\rangle_H$ and Theorem~\ref{thm:lions}.
+\end{proof}
+
+\section{Uniqueness in the paper's complex spaces}
+
+\begin{lemma}[Uniqueness of the Lions solution on the line]
+  \label{lem:lions-uniqueness}
+  \lean{LionsC12.IsLionsSol, LionsC12.reDual, LionsC12.realTriple, LionsC12.IsLionsSol.ae_eq,
+    LionsC12.isLionsSolution_unique, LionsC12.val_injective, LionsC12.denseRange_val}
+  \leanok
+  \uses{def:lions-solution, thm:lions}
+  Let $U\subseteq\R$ be open and $\fra$ measurable, bounded and non-negative.  Two Lions solutions
+  of $w'+\cA(t)w=f$, $w(0)=0$, in the sense of Definition~\ref{def:lions-solution}, agree
+  almost everywhere on $(0,1)$.
+\end{lemma}
+
+\textbf{Lean form.}  The complex triple $V\hookrightarrow H\hookrightarrow V'$ is realified: $V$
+and $H$ become real Hilbert spaces with the real part of the inner product, and an
+anti-linear functional $\ell$ becomes the real functional $\re\ell$ (\texttt{reDual}, which is
+injective).  The difference of two solutions solves the homogeneous problem in the realified
+triple; the Lions--Magenes identity and $\re\fra(t)[w,w]\geq0$ give $\norm{w(t)}_H^2\leq0$.  Only
+non-negativity of the form is used, so uniqueness is proved under a weaker hypothesis than the
+paper's uniform coercivity.  The density of $V$ in $H$ is proved from the density of
+$\C_c^\infty(U)$ in $\Leb^2(U)$ (Mathlib).
+
+\begin{proof}
+  \leanok
+  As in the Lean form above.
+\end{proof}
+
+\begin{lemma}[Uniqueness of the Lions solution on a domain]
+  \label{lem:lions-uniqueness-domain}
+  \lean{LionsC12.isLionsSolutionΩ_unique, LionsC12.valΩ_injective, LionsC12.denseRange_valΩ}
+  \leanok
+  \uses{def:spaces-domain, lem:lions-uniqueness}
+  The same statement for an open $\Omega\subseteq\R^d$ and the forms
+  $\frb(t)[v,w]=\int_\Omega\frb\,\nabla v\cdot\overline{\nabla w}$ with $\frb$ measurable, bounded and
+  non-negative.
+\end{lemma}
+
+\begin{proof}
+  \leanok
+  The proof of Lemma~\ref{lem:lions-uniqueness}, with the abstract statement
+  \texttt{IsLionsSol.ae\_eq} applied to $V_\Omega\hookrightarrow H_\Omega$.
+\end{proof}

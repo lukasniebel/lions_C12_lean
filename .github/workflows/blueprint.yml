@@ -1,0 +1,111 @@
+name: blueprint
+
+# Builds the Lean blueprint (pdf and web version with the dependency graph),
+# checks that every declaration the blueprint cites exists in the built
+# library, and builds the API documentation.  The result is kept as an
+# Actions artifact of the run (`documentation-site`); nothing is deployed.
+# The release gate (`audit.yml`) also checks the cited declarations.
+#
+# Manual only: one run of this workflow builds the whole library (about an
+# hour on four cores).  Start it by hand from the Actions tab when a fresh documentation
+# artifact is wanted.
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: blueprint-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  blueprint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.0
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: false
+          docker-images: true
+          swap-storage: false
+
+      - uses: actions/checkout@v7
+
+      - name: Install zstd
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq zstd
+
+      - name: Cache Lean toolchain and dependencies
+        uses: actions/cache@v6
+        with:
+          path: |
+            .toolchains
+            .lake/packages
+          key: lean-deps-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'scripts/bootstrap-lean.sh') }}
+
+      - name: Restore project build outputs
+        uses: actions/cache@v6
+        with:
+          path: .lake/build
+          key: lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'lakefile.toml') }}-${{ github.sha }}
+          restore-keys: |
+            lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'lakefile.toml') }}-
+
+      - name: Bootstrap Lean and the Mathlib cache
+        run: bash scripts/bootstrap-lean.sh
+
+      - name: Build the library
+        env:
+          LEAN_NUM_THREADS: 4
+        run: scripts/lake build LionsC12
+
+      # The documentation action calls `~/.elan/bin/lake`; point it at the
+      # project's own toolchain, which `scripts/bootstrap-lean.sh` installs
+      # under `.toolchains/`.
+      - name: Expose the project toolchain as ~/.elan/bin/lake
+        run: |
+          mkdir -p ~/.elan/bin
+          toolchain="$(ls -d "$PWD"/.toolchains/lean-*-linux | head -n 1)"
+          ln -sf "$toolchain/bin/lake" ~/.elan/bin/lake
+          ln -sf "$toolchain/bin/lean" ~/.elan/bin/lean
+          echo "$toolchain/bin" >> "$GITHUB_PATH"
+          ~/.elan/bin/lake --version
+
+      # The documentation action's `build_docs.sh` creates a `docbuild/`
+      # workspace with no `lean-toolchain` file.  Lake then adopts doc-gen4's
+      # toolchain and tries to restart itself through elan, which this
+      # workflow does not install ("no Elan detected", exit code 4).  With the
+      # project's toolchain file in place Lake reports "already up-to-date"
+      # and carries on.
+      - name: Pin the documentation workspace to the project toolchain
+        run: |
+          mkdir -p docbuild
+          cp lean-toolchain docbuild/lean-toolchain
+
+      - name: Blueprint, declaration check, API documentation
+        uses: leanprover-community/docgen-action@deed0cdc44dd8e5de07a300773eb751d33e32fc8 # 2025-10-26
+        with:
+          blueprint: true
+          api-docs: true
+          build-page: false
+          homepage: home_page
+          # `api-docs` and `blueprint` carry no condition, so every run builds
+          # and checks the blueprint *and* the API documentation and uploads
+          # the result below.  The site is not deployed (see the header).
+          deploy: false
+
+      # The built site (home page, blueprint web version and pdf, API
+      # documentation) is kept as an artifact of the run.
+      - name: Keep the built documentation as an artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: documentation-site
+          path: home_page
+          retention-days: 30
+          if-no-files-found: error

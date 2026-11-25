@@ -1,0 +1,216 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+# formalization.yaml v0.4: provenance, sources, process and review of this formalisation.
+version: "v0.4"
+
+project:
+  name: "Lions' maximal regularity problem for divergence-form differential operators: failure at the 1/2-Hölder endpoint"
+  description: >-
+    A Lean 4 formalisation, built on mathlib, of L. Niebel, "Lions' Maximal Regularity Problem for
+    Divergence-Form Differential Operators: Failure at the 1/2-Hölder Endpoint"
+    (arXiv:2608.11194v2), an arXiv preprint. J.-L. Lions asked whether the variational solution of
+    u' + A(t)u = f, u(0) = 0, with forms of bounded measurable coefficients, has maximal
+    L^2-regularity, u' in L^2(0,T;H), when f is in L^2(0,T;H). The paper shows that 1/2-Hölder
+    continuity in time with values in L^infinity does not suffice: on the interval (0,pi) it
+    constructs a bounded, uniformly elliptic, real scalar coefficient, 1/2-Hölder continuous in time
+    with values in L^infinity(0,pi) and arbitrarily close to 1, a continuous L^2-valued forcing, and
+    the unique Lions variational solution, whose time derivative is not square integrable (Theorem
+    1.1); and, by zero extension, tensorisation and parabolic rescaling, real symmetric isotropic
+    counterexamples on R^d and on every bounded domain of R^d, d >= 1 (Corollary 1.2). The compared
+    theorems are Theorem 1.1 and Corollary 1.2, stated in Challenge.lean in the paper's spaces H =
+    L^2, V = H^1_0 (the closure of the graphs of C^1_c functions) and V' (its anti-dual), with
+    uniqueness of the Lions solution. The repository formalises, in its own terms and with every
+    deviation recorded in DEVIATIONS.md, the other numbered statements of the paper, one of them in
+    part (Corollary 7.1 directly, without the cited sufficiency theorems and the operator-theoretic
+    side conditions), with no counterpart for Remark 3.1 (a comment without a claim), and proves
+    Lions' uniqueness theorem in the paper's complex spaces; about 21,000 lines of Lean in 61
+    library modules; every theorem of the library depends only on the standard axioms propext,
+    Classical.choice and Quot.sound, and there is no sorry outside the two deliberate ones in
+    Challenge.lean.
+  authors:
+    - "Lukas Niebel"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "Lukas Niebel"
+
+classification:
+  arxiv: ["math.AP", "math.FA"]
+  msc2020: ["35K90", "35B65", "35R05"]
+
+sources:
+  - title: "Lions' Maximal Regularity Problem for Divergence-Form Differential Operators: Failure at the 1/2-Hölder Endpoint"
+    authors:
+      - "Lukas Niebel"
+    id: "arXiv:2608.11194v2"
+    type: "paper"
+    location: "https://arxiv.org/abs/2608.11194v2"
+    relationship: "formalizes"
+    note: >-
+      The formalisation follows this version of the paper section by section. The author of the
+      paper directed the formalisation. CORRESPONDENCE.md maps every statement of the paper to its
+      Lean declarations, and DEVIATIONS.md lists every difference between the Lean statements and
+      arguments and the paper. Previous formalisations of this result: none known.
+    author_endorsement: "participated"
+  - title: "Non-autonomous maximal regularity for forms of bounded variation"
+    authors:
+      - "D. Dier"
+    id: "doi:10.1016/j.jmaa.2014.12.006"
+    type: "paper"
+    location: "J. Math. Anal. Appl. 425 (2015), no. 1, 33-54"
+    relationship: "background"
+    note: >-
+      Theorem 4.1 (bounded variation of the forms) is cited in Section 7 of the paper; the failure
+      of its hypothesis is proved directly (Corollary 7.1(i)); the theorem itself is not formalised.
+  - title: "Maximal regularity for non-autonomous evolution equations"
+    authors:
+      - "B. H. Haak"
+      - "E. M. Ouhabaz"
+    id: "doi:10.1007/s00208-015-1199-7"
+    type: "paper"
+    location: "Math. Ann. 363 (2015), no. 3-4, 1117-1145"
+    relationship: "background"
+    note: >-
+      Theorem 1.2 (a Dini condition) is cited in Section 7 of the paper; the failure of its
+      hypothesis is proved directly (Corollary 7.1(ii)); the theorem itself is not formalised.
+  - title: "Lions' maximal regularity problem with H^{1/2}-regularity in time"
+    authors:
+      - "M. Achache"
+      - "E. M. Ouhabaz"
+    id: "doi:10.1016/j.jde.2018.09.015"
+    type: "paper"
+    location: "J. Differential Equations 266 (2019), no. 6, 3654-3678"
+    relationship: "background"
+    note: >-
+      Theorem 2.2 (piecewise H^{1/2} regularity) is cited in Section 7 of the paper; the failure of
+      its hypothesis and the form part of its side conditions are proved directly (Corollary
+      7.1(iii)); the theorem itself is not formalised.
+  - title: "On non-autonomous maximal regularity for elliptic operators in divergence form"
+    authors:
+      - "P. Auscher"
+      - "M. Egert"
+    id: "doi:10.1007/s00013-016-0934-y"
+    type: "paper"
+    location: "Arch. Math. (Basel) 107 (2016), no. 3, 271-284"
+    relationship: "background"
+    note: >-
+      Theorem 2, condition (8) (a scale-invariant square condition) is cited in Section 7 of the
+      paper; its failure is proved directly (Corollary 7.1(iv)); the theorem itself is not
+      formalised.
+
+related_formalizations: []
+
+status:
+  scope: >-
+    The compared theorems, LionsC12Challenge.lions_counterexample_interval and
+    LionsC12Challenge.lions_counterexample_domain (Challenge.lean, proved in Solution.lean), are
+    Theorem 1.1 and Corollary 1.2 of the paper in mathlib's terms: the coefficient is measurable,
+    bounded and uniformly elliptic, with the C^{0,1/2}([0,1];L^infinity) bounds summing to less than
+    delta and no C^{0,alpha} bound for 1/2 < alpha < 1; the forcing is real, continuous on [0,1]
+    into L^2 and square integrable; the solution is real, continuous into H^1_0, differentiable
+    within [0,1] into H^{-1} with continuous derivative, Bochner integrable in L^2 with an
+    integrable distributional derivative, vanishes at 0, satisfies the equation in H^{-1} for every
+    t in [0,1], is a Lions variational solution, and every Lions solution with the same forcing
+    equals it almost everywhere; no square-integrable L^2-valued function represents its derivative,
+    and (on the interval) u(t) lies in the domain of the H-realisation for every t, with the
+    elliptic part in L^1 but not in L^2. The library proves in addition, in its own terms: Lemma
+    2.1, Propositions 3.2 to 3.4 (with D(A_{0,H}) identified with the intersection of H^2 and
+    H^1_0), Lemma 4.1, Proposition 5.1, the remark on the growth of the maximal-regularity constant
+    (the truncated problems have maximal regularity, and every constant is at least c eps sqrt(log
+    N)), Lemma 6.1, Propositions 6.2 and 6.3, Corollary 7.1 (directly, without the cited sufficiency
+    theorems), Corollary 1.2 on every non-empty open set, and Lions' theorem on real Gelfand
+    triples. Not formalised: Remark 3.1, the sufficiency theorems cited in Section 7 and the
+    operator-theoretic part of the side conditions of Achache-Ouhabaz; the proofs of Theorem 1.1 and
+    Corollary 1.2 depend on none of them.
+  # Excluding the two deliberate sorries of Challenge.lean.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: []
+
+automation:
+  methods:
+    - method: "agent"
+      models:
+        - "Claude Opus 5.5"
+      framework: "Claude Code"
+      tool_setup: >-
+        The Lean code, the blueprint and the documentation were written by AI coding agents
+        (Anthropic's Claude models, run through Claude Code) under the direction of the author, who
+        supplied the paper. The list of models is given from memory and may be incomplete.
+      cost:
+        spend_usd: "subscription-based"
+  spend_usd: "subscription-based"
+  notes: >-
+    The author supplied the paper and directed the work; AI coding agents wrote the Lean code, the
+    blueprint and the documentation. Lean checks the proofs against the formal statements, and
+    Comparator checks that Solution.lean proves the statements of Challenge.lean with the axioms
+    propext, Quot.sound and Classical.choice only. The correspondence between the formal statements
+    and the paper is documented in CORRESPONDENCE.md and DEVIATIONS.md.
+
+fidelity:
+  divergences: >-
+    Differences between the compared theorems and Theorem 1.1 and Corollary 1.2 as printed (in full:
+    DEVIATIONS.md, Parts A and B). (1) H^1_0 is the closure of the graphs of C^1_c functions in L^2
+    x L^2 with the graph norm, H^{-1} its anti-dual: equivalent to the usual definitions, which are
+    not formalised. (2) C^1([0,1];V') is a derivative within [0,1] at every point with a continuous
+    derivative; W^{1,1}(0,1;H) is Bochner integrability with an integrable distributional derivative
+    tested against real C_c^infinity(0,1) functions. (3) The Lions class is: w in L^2(0,1;V), a
+    V'-valued distributional derivative in L^2(0,1;V'), the equation almost everywhere, and a
+    V'-continuous representative vanishing at 0. (4) The negative clauses do not depend on a
+    representative: no L^2(0,1;H) function represents u' almost everywhere, and every representative
+    of A(t)u(t) is in L^1 but not in L^2. (5) The C^{0,1/2} norm is the sum of the two suprema, read
+    as two non-negative bounds A + B < delta. (6) Real-valuedness of an L^2 element is the vanishing
+    of its imaginary part almost everywhere. (7) On a domain, "bounded domain" is a bounded
+    non-empty open set (connectedness is dropped, and neither boundedness nor connectedness is
+    used), the matrix norm is the operator norm of R^d, and symmetry is IsSelfAdjoint.
+
+review:
+  status: "author-verified"
+  reviewers:
+    - "Lukas Niebel"
+  notes: >-
+    Lean checks each proof against its formal statement. The author reviewed that the statements are
+    the intended theorems. Each public statement was compared with the paper by independent model
+    reviews, and the comparator declaration is checked mechanically. This is not external peer
+    review.
+
+alignment:
+  namespace: "LionsC12Challenge"
+  statements:
+    - source: "Theorem 1.1 (thm:main)"
+      lean: "LionsC12Challenge.lions_counterexample_interval"
+      module: "Solution"
+      status: "proved"
+      note: >-
+        The compared theorem; its statement is that of Challenge.lean, with the differences from the
+        printed theorem listed under fidelity.divergences.
+    - source: "Corollary 1.2 (cor:bounded-domains)"
+      lean: "LionsC12Challenge.lions_counterexample_domain"
+      module: "Solution"
+      status: "proved"
+      note: "The compared theorem; differences under fidelity.divergences."
+    - source: "Corollary 1.2 (cor:bounded-domains), on every non-empty open set"
+      lean: "LionsC12.lions_counterexample_open"
+      module: "LionsC12.Domains.Corollary"
+      status: "proved"
+      note: "DEVIATIONS.md, B5."
+    - source: "Propositions 6.2 and 6.3 (prop:line, prop:tensor)"
+      lean: "LionsC12.lions_counterexample_fullspace"
+      module: "LionsC12.Domains.Corollary"
+      status: "proved"
+      note: "With every clause of Corollary 1.2 on R^d; DEVIATIONS.md, C6.2."
+    - source: "Corollary 7.1"
+      lean: "LionsC12.endpoint_hypotheses_fail"
+      module: "LionsC12.Endpoint.Main"
+      status: "proved"
+      note: "Proved directly, without the cited theorems; DEVIATIONS.md, C7.1-C7.8."
+    - source: "Remark 5.2 (growth of the maximal-regularity constant)"
+      lean: "LionsC12.truncation_maxReg_growth"
+      module: "LionsC12.Interval.MaxReg"
+      status: "proved"
+      note: >-
+        The truncated problems have maximal regularity with a finite constant, and every constant is
+        at least c eps sqrt(log N), with explicit constants; DEVIATIONS.md, C5.2.
+
+acknowledgements: >-
+  Built on Lean 4 and mathlib. Lukas Niebel is funded by SNSF Starting Grant TMSGI2_226018 and by
+  the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) under Germany's Excellence
+  Strategy EXC 2044/2-390685587, Mathematics Münster: Dynamics-Geometry-Structure.

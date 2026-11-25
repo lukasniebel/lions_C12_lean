@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lions' maximal regularity problem at the 1/2-Hölder endpoint: Lean formalisation</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body { font-family: Georgia, serif; max-width: 42em; margin: 3em auto; padding: 0 1em; line-height: 1.5; color: #222; }
+h1 { font-size: 1.6em; }
+a { color: #1a4d8f; }
+li { margin: 0.4em 0; }
+</style>
+</head>
+<body>
+<h1>Lions' maximal regularity problem: failure at the ½-Hölder endpoint</h1>
+<p>Lean 4 formalisation of the paper
+<a href="https://arxiv.org/abs/2608.11194v2">arXiv:2608.11194v2</a> (Lukas Niebel).  Theorem 1.1
+(the counterexample on an interval) and Corollary 1.2 (on every bounded domain of every dimension)
+are proved in Lean in the paper's function spaces, with uniqueness of the Lions solution, from
+Mathlib alone.  The blueprint shows, statement by statement, which Lean declarations formalise the
+paper and how the formal statements differ from the paper's.</p>
+<ul>
+  <li><a href="blueprint/">Blueprint</a> (web version with the dependency graph)</li>
+  <li><a href="blueprint.pdf">Blueprint</a> (pdf)</li>
+  <li><a href="docs/">API documentation</a> of the Lean development</li>
+  <li><a href="https://github.com/lukasniebel/lions_C12_lean">Source repository</a></li>
+</ul>
+<p>The source repository also carries the paper-to-Lean correspondence
+(<code>CORRESPONDENCE.md</code>), the list of deviations from the paper
+(<code>DEVIATIONS.md</code>) and the module map (<code>docs/MODULE_MAP.md</code>).</p>
+</body>
+</html>

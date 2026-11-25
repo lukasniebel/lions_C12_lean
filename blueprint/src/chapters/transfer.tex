@@ -1,0 +1,147 @@
+The interval counterexample is extended by zero to the line, tensorised with a bump in the
+remaining variables, and rescaled into a ball inside an arbitrary open set.  The key ingredient is
+that $\phi$, $p_K$ and their first derivatives vanish at both endpoints, so that the zero extension
+of the flux $\fra\partial_xu$ has no Dirac masses at $0$ and $\pi$.  For a function $z$ on $(0,\pi)$,
+$E_0z$ is its zero extension to $\R$.
+
+\begin{lemma}[Zero extension of a vanishing flux]
+  \label{lem:zero-extension-flux}
+  \lean{LionsC12.zero_extension_flux, LionsC12.integral_deriv_mul_primitive}
+  \leanok
+  Let $q\in\Leb^1(0,1;\Sob^1(0,\pi))$ with $q(t,0)=q(t,\pi)=0$ for almost every $t\in(0,1)$.  Then
+  $\partial_x(E_0q)=E_0(\partial_xq)$ in $\mathcal D'((0,1)\times\R)$.
+\end{lemma}
+
+\textbf{Lean form.}  $q\in\Leb^1(0,1;\Sob^1(0,\pi))$ is read as: $q$ and $\partial_xq$ are integrable
+on $(0,1)\times(0,\pi)$, and for almost every $t$, $q(t,\cdot)$ is the primitive
+$x\mapsto\int_0^x\partial_xq(t,y)\dd y$ on $[0,\pi]$ (the absolutely continuous representative with
+$q(t,0)=0$) with $q(t,\pi)=0$; this is $\Leb^1(0,1;\W^{1,1}(0,\pi))$, which contains
+$\Leb^1(0,1;\Sob^1(0,\pi))$.  The identity is
+$\int_0^1\!\int_\R E_0q\,\partial_x\psi=-\int_0^1\!\int_\R E_0(\partial_xq)\,\psi$ for every $\psi$ that is
+$\C^1$ in $x$, which contains the test functions of $\mathcal D'((0,1)\times\R)$.
+
+\begin{proof}
+  \leanok
+  Fubini on the triangle $\{0<y<x<\pi\}$: $\int_0^\pi\psi'(x)\int_0^xg=\psi(\pi)\int_0^\pi g-\int_0^\pi\psi g$,
+  and the boundary term vanishes because $q(t,\pi)=0$.
+\end{proof}
+
+\begin{lemma}[The one-dimensional weak form on the line]
+  \label{lem:weak-line}
+  \lean{LionsC12.weak1D, LionsC12.uZ, LionsC12.fZ}
+  \leanok
+  \uses{lem:zero-extension-flux, lem:cancellation}
+  For every $t$, the zero extensions $\widetilde u=E_0u$ and $\widetilde f=E_0f$ satisfy
+  $\int_\R\fra\,\partial_x\widetilde u\,\overline{\psi'}=\int_\R(\widetilde f-\partial_t\widetilde u)\overline\psi$ for every
+  $\psi\in\C^1(\R)$ with no boundary condition, also after the parabolic rescaling
+  $(t,x)\mapsto(t/r^2,(x-x_0)/r)$.
+\end{lemma}
+
+\begin{proof}
+  \leanok
+  $\widetilde u(t,\cdot)$ is $\C^1$ because $u$ and $\partial_xu$ vanish at $0$ and $\pi$, and the flux
+  $\fra\partial_x\widetilde u$ is $\C^1$ on $[0,\pi]$ and vanishes at the endpoints; integrate by parts
+  on $[0,\pi]$ as in Lemma~\ref{lem:zero-extension-flux}.
+\end{proof}
+
+\begin{lemma}[Tensor products]
+  \label{lem:tensor}
+  \lean{LionsC12.tens, LionsC12.lapQ, LionsC12.tensorΩ_weak}
+  \leanok
+  \uses{lem:weak-line}
+  For bounded measurable $P,P',A,b$ on $\R$ with the one-dimensional weak identity
+  $-\partial_1(b\partial_1P)=A$ and $Q\in\C_c^\infty(\R^{d-1})$,
+  $-\Div\bigl(b(x_1)\nabla(P\otimes Q)\bigr)=A\otimes Q-bP\otimes\Delta'Q$ weakly on $\R^d$.
+\end{lemma}
+
+\begin{proof}
+  \leanok
+  Fubini, the identity in $x_1$, and integration by parts on lines in the $x'$ variables.
+\end{proof}
+
+\begin{definition}[The construction on $\R^d$ and its rescaling]
+  \label{def:domain-construction}
+  \lean{LionsC12.bumpE, LionsC12.domB, LionsC12.domW, LionsC12.domWt, LionsC12.domGrad,
+    LionsC12.domF, LionsC12.DomParams, LionsC12.dU, LionsC12.dG, LionsC12.dF, LionsC12.dGv,
+    LionsC12.dU'}
+  \leanok
+  \uses{def:spaces-domain, def:solution}
+  For $d=n+1$, a bump $\chi$ on $\R^n$, a centre $p$ and a radius $0<r\leq1$:
+  $\frb(t,x)=\fra(t/r^2,(x_1-p_1)/r)$, $U(t,x)=\widetilde u(t/r^2,(x_1-p_1)/r)\,\chi((x'-p')/r)$, and
+  $F=r^{-2}\bigl(\widetilde f\otimes\chi-\fra\widetilde u\otimes\Delta'\chi\bigr)$ in the rescaled variables, as
+  functions on $\R\times\R^d$ and as elements of $V_\Omega$, $H_\Omega$, $V_\Omega'$.
+\end{definition}
+
+\begin{proposition}[Counterexample on the real line]
+  \label{prop:line}
+  \lean{LionsC12.lions_counterexample_fullspace}
+  \leanok
+  \uses{def:domain-construction, lem:weak-line, lem:solution-regularity, prop:forcing,
+    lem:lions-uniqueness-domain}
+  $\widetilde u=E_0u$ is the Lions variational solution on $\R$ with forcing $\widetilde f=E_0f$; $\fra$ is
+  bounded, uniformly elliptic and in $\C^{0,1/2}([0,1];\Leb^\infty(\R))$, but
+  $\partial_t\widetilde u\notin\Leb^2(0,1;\Leb^2(\R))$.
+\end{proposition}
+
+\begin{proposition}[Counterexamples in full space]
+  \label{prop:tensor}
+  \lean{LionsC12.lions_counterexample_fullspace, LionsC12.DomainClauses}
+  \leanok
+  \uses{def:domain-construction, lem:tensor, lem:solution-regularity, prop:forcing,
+    lem:lions-uniqueness-domain}
+  Let $d\geq2$.  $\frB_d(t,x)=\fra(t,x_1)\Id_d\in\C^{0,1/2}([0,1];\Leb^\infty(\R^d;\R^{d\times d}))$ is
+  real symmetric, bounded and uniformly elliptic, and there are a real
+  $F\in\Leb^2(0,1;\Leb^2(\R^d))$ and a unique Lions solution $U$ with $U(0)=0$ of
+  $\partial_tU-\Div(\frB_d\nabla U)=F$, with $\partial_tU\notin\Leb^2(0,1;\Leb^2(\R^d))$.
+\end{proposition}
+
+\textbf{Lean form.}  One theorem, \texttt{lions\_counterexample\_fullspace}, proves both
+propositions for every $d=n+1\geq1$ on $\Omega=\R^d$ without rescaling: the coefficient is
+$\frb(t,x)=\fra(t,x_1)$, $U(t)=\widetilde u(t)\otimes\chi$ and
+$F(t)=\widetilde f(t)\otimes\chi-\fra\widetilde u(t)\otimes\Delta'\chi$, and they satisfy every clause of
+Corollary~\ref{cor:bounded-domains} on $\R^d$ (\texttt{DomainClauses}), which is more than the
+propositions assert.  The case $d=1$ is $n=0$: $\R^0$ is a point, $\chi\equiv1$ and $\Delta'\chi=0$,
+so $U=\widetilde u$ and $F=\widetilde f$; the line is \texttt{EuclideanSpace ℝ (Fin 1)} rather than
+$\R$.  The bump is a smooth bump of Mathlib supported in the closed unit ball.
+
+\begin{proof}
+  \leanok
+  The spatial weak formulation at fixed $t$ follows from Lemmas~\ref{lem:weak-line}
+  and~\ref{lem:tensor}, for test functions first and for all of $V_\Omega$ by density
+  (\texttt{swf}).  The regularity of $U$ and $F$ follows from that of $\widetilde u$ and
+  $\widetilde f$, because every function involved is supported in a fixed compact set.  The negative
+  clause is $\int\norm{\partial_tU}^2=\norm{\chi}^2_{\Leb^2}\int\norm{\partial_t\widetilde u}^2=\infty$.
+\end{proof}
+
+\textbf{Lean form of the proof of Corollary~\ref{cor:bounded-domains}.}  The statement is proved for
+every non-empty open $\Omega\subseteq\R^d$ (\texttt{lions\_counterexample\_open}); boundedness and
+connectedness are not used.  The point $x_0=p$ is the centre of a ball $B(p,\rho)\subseteq\Omega$,
+$r=\min\{1,\rho/(2(\pi+1))\}$, and the compact support set is $\overline B(p,r(\pi+1))$ in place of
+$x_0+rK$.  $\eps=\min\{1,\delta r/(2(1+2C_\beta))\}$, the H\"older constant is $B=2\eps C_\beta/r$ and
+$A=\eps/480$.  The failure of $\alpha$-H\"older continuity evaluates $\frb$ at $p$, where the
+rescaled first coordinate is $0$ (as in Proposition~\ref{prop:holder-sharp}).  For
+$U\in\C^1([0,1];V_\Omega')$ the paper uses $W\in\C(\R;\Sob^1)$, $\partial_sW\in\C(\R;\Sob^{-1})$ and
+bounded dilations; Lean instead defines $U'(t)=F(t)-\cA(t)U(t)$, which is continuous into
+$V_\Omega'$ because $t\mapsto\frb\nabla U(t)$ is continuous in $\Leb^2(\Omega;\CC^d)$, identifies it
+with $\partial_tU(t)\in H_\Omega$ by the spatial weak formulation (\texttt{dU'\_eq}), and obtains the
+derivative at the accumulation time $5r^2/16$ from the fundamental theorem of calculus
+(\texttt{hasDerivAt\_ofH10\_dU}).
+
+\begin{lemma}[The clauses of Corollary~1.2 for the construction]
+  \label{lem:domain-clauses}
+  \lean{LionsC12.domainClauses_of_params, LionsC12.exists_eps, LionsC12.lions_counterexample_open,
+    LionsC12.swf, LionsC12.dU'_eq, LionsC12.hasDerivAt_ofH10_dU, LionsC12.continuous_dU,
+    LionsC12.continuous_dU', LionsC12.continuous_dF, LionsC12.not_holder_dB,
+    LionsC12.isLionsSolutionΩ_dU, LionsC12.not_exists_L2_dU', LionsC12.not_exists_L2_form}
+  \leanok
+  \uses{def:domain-construction, lem:tensor, lem:weak-line, prop:coefficient, prop:holder-sharp,
+    lem:solution-regularity, prop:forcing, lem:lions-uniqueness-domain}
+  For every open $\Omega$, every admissible $\eps$, radius $r\leq1$ and centre $p\in\Omega$ with
+  $\overline B(p,r(\pi+1))\subseteq\Omega$, the rescaled construction satisfies every clause of
+  Corollary~\ref{cor:bounded-domains}.
+\end{lemma}
+
+\begin{proof}
+  \leanok
+  As described above.
+\end{proof}

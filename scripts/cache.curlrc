@@ -1,0 +1,4 @@
+# Mathlib's cache contains thousands of small files.  Keep enough simultaneous
+# transfers to amortize latency while bounding the number of open connections.
+parallel-max = 50
+parallel-immediate

@@ -1,0 +1,125 @@
+For $j\geq1$ let $\tau_j=\frac5{16}-\frac1{16j}$, $\ell_j=\tau_{j+1}-\tau_j=\frac1{16j(j+1)}$,
+$M_j=j$, $I_j=(\tau_j,\tau_{j+1})$, $J_j=[\tau_j+\ell_j/3,\tau_j+2\ell_j/3]$, and for
+$1\leq m\leq M_j$ let $K_{j,m}=16^{m+1}j(j+1)$ and $\theta_{j,m}(t)=K_{j,m}^2(t-\tau_j)$.  With a
+cutoff $\eta\in\C_c^\infty(0,1)$, $0\leq\eta\leq1$, $\supp\eta\subseteq[1/10,9/10]$,
+$\eta=1$ on $[1/3,2/3]$, and $\eta_j(t)=\eta((t-\tau_j)/\ell_j)$,
+\[
+  \beta(t,x)=\sum_{j\geq1}\sum_{m=1}^{M_j}\eta_j(t)K_{j,m}^{-1}\sin\theta_{j,m}(t)\cos(K_{j,m}x),
+  \qquad \fra(t,x)=1+\eps\beta(t,x).
+\]
+
+\begin{definition}[Time blocks, frequencies, cutoffs and the coefficient]
+  \label{def:coefficient}
+  \lean{LionsC12.τ, LionsC12.ℓ, LionsC12.M, LionsC12.K, LionsC12.θ, LionsC12.I, LionsC12.J,
+    LionsC12.S, LionsC12.Cutoffs, LionsC12.Cutoffs.nonempty, LionsC12.ηj, LionsC12.βmode,
+    LionsC12.βblock, LionsC12.β, LionsC12.βx, LionsC12.a}
+  \leanok
+  The objects above.  At a fixed time at most one block is active, so the sum is pointwise
+  finite.
+\end{definition}
+
+\textbf{Lean form.}  The two cutoffs $\eta$ and $\rho$ of the paper are recorded, with the
+properties used in the proofs, as the structure \texttt{Cutoffs}; its existence
+(\texttt{Cutoffs.nonempty}) is proved from Mathlib's smooth bump functions, and the theorems
+are proved for every inhabitant.  The infinite sums over blocks are \texttt{finsum}s.
+
+\begin{lemma}[Arithmetic of the blocks]
+  \label{lem:reciprocal-sums}
+  \lean{LionsC12.S_le, LionsC12.sum_K_inv_sq_le, LionsC12.M_mul_ℓ, LionsC12.M_mul_S_le,
+    LionsC12.K_succ, LionsC12.one_le_K_sq_mul_ℓ, LionsC12.I_disjoint}
+  \leanok
+  \uses{def:coefficient}
+  $S_j=\sum_mK_{j,m}^{-1}\leq\ell_j/15$, $\sum_mK_{j,m}^{-2}\leq\ell_j^2/255$,
+  $M_j\ell_j=\frac1{16(j+1)}$ and $M_jS_j\leq\frac1{240(j+1)}$
+  (\texttt{eq:reciprocal-sums}); consecutive frequencies differ by the factor $16$; the
+  blocks are disjoint.
+\end{lemma}
+
+\begin{proof}
+  \leanok
+  Geometric sums.
+\end{proof}
+
+The paper's Remark~3.1 (\emph{Choice of the frequencies}) observes that the factor $16$ is used
+only for summability and separation, and that a dyadic family would do after changing
+constants.  It makes no claim used later and has no Lean counterpart; the formalisation uses the
+factor $16$ of the paper.
+
+\begin{proposition}[Ellipticity and $\frac12$-H\"older time regularity]
+  \label{prop:coefficient}
+  \lean{LionsC12.abs_β_le, LionsC12.abs_a_sub_one_le, LionsC12.abs_β_sub_le,
+    LionsC12.abs_a_sub_le, LionsC12.eLpNorm_a_sub_one_le, LionsC12.eLpNorm_a_sub_le,
+    LionsC12.isBoundedCoeff_a, LionsC12.a_pos}
+  \leanok
+  \uses{def:coefficient, lem:reciprocal-sums}
+  $\fra$ is bounded and real, $\norm{\fra-1}_{\Leb^\infty(\R^2)}\leq C\eps$, and
+  $\norm{\fra(t,\cdot)-\fra(s,\cdot)}_{\Leb^\infty(\R)}\leq C\eps\abs{t-s}^{1/2}$ for $s,t\in\R$,
+  with $C$ depending only on $\eta$.  For small $\eps$, $\fra$ is uniformly elliptic.
+\end{proposition}
+
+\textbf{Lean form.}  The bounds are pointwise for every $(t,x)$, with the explicit constants
+$\abs{\fra-1}\leq\eps/480$ and $\abs{\fra(t,x)-\fra(s,x)}\leq2\eps C_\beta\abs{t-s}^{1/2}$, where
+$C_\beta$ depends only on the cutoff; the $\Leb^\infty(0,\pi)$ forms
+(\texttt{eLpNorm\_a\_sub\_one\_le}, \texttt{eLpNorm\_a\_sub\_le}) follow.  Uniform ellipticity
+holds for every $0\leq\eps\leq1$.
+
+\begin{proof}
+  \leanok
+  At each time one block contributes, so $\abs{\beta}\leq\sup_jS_j\leq\ell_1/15$.  For the
+  H\"older bound, compare $\abs{t-s}$ with $K_{j,m}^{-2}$: for the modes with
+  $K_{j,m}^2\abs{t-s}\leq1$ use the derivative bound, for the others the uniform bound, and sum
+  the two geometric series; times in different blocks are reduced to the block endpoints.
+\end{proof}
+
+\begin{proposition}[Sharpness within the H\"older scale]
+  \label{prop:holder-sharp}
+  \lean{LionsC12.not_holder, LionsC12.not_holder_Linfty}
+  \leanok
+  \uses{def:coefficient}
+  For every $\frac12<\alpha<1$, $\fra\notin\C^{0,\alpha}([0,1];\Leb^\infty(0,\pi))$.
+\end{proposition}
+
+\textbf{Lean form.}  \texttt{not\_holder} shows that the pointwise quotient
+$\abs{\fra(t,0)-\fra(s,0)}/\abs{t-s}^\alpha$ is unbounded on $[0,1]$, at the point $x=0$, with
+$t,s$ in the middle third of a block; \texttt{not\_holder\_Linfty} deduces the statement for the
+essential supremum on $(0,\pi)$, because $\fra(t,\cdot)$ is continuous and the essential supremum
+of a continuous function on $(0,\pi)$ dominates its value at $0$.  The paper argues with the
+Fourier coefficient $\Lambda_K$; the point evaluation at $x=0$ is a different but equivalent route,
+since all modes of a block are evaluated at $\cos(K\cdot0)=1$.
+
+\begin{proof}
+  \leanok
+  Inside $J_j$ only the first mode of block $j$ moves at the scale $h=\pi/(2K_{j,1}^2)$; the
+  increment over $h$ is at least $c\eps K_{j,1}^{-1}=c'\eps h^{1/2}$, while $h^\alpha\ll h^{1/2}$.
+\end{proof}
+
+\begin{proposition}[Common operator domain without uniform graph control]
+  \label{prop:frozen-domains}
+  \lean{LionsC12.IsRealisation, LionsC12.domain_eq, LionsC12.MemH2, LionsC12.domain_one_eq_H2,
+    LionsC12.domain_eq_H2, LionsC12.exists_bound_on_D₀, LionsC12.not_uniform_bound_on_D₀}
+  \leanok
+  \uses{def:coefficient, def:lions-solution, lem:coefficient-profile, prop:sobolev}
+  Let $D_0=D(A_{0,H})=\Sob^2(0,\pi)\cap\Sob^1_0(0,\pi)$ with the graph norm of $A_{0,H}$.  Then
+  $D(A_H(t))=D_0$ for $t\in[0,1]$, but $\sup_{t\in[0,1]}\norm{A_H(t)}_{\cL(D_0,H)}=\infty$.
+\end{proposition}
+
+\textbf{Lean form.}  $D(A_H(t))$ is the set of $v\in V$ for which some $h\in H$ satisfies
+$\fra(t)[v,w]=\langle h,w\rangle_H$ for all $w\in V$, and $D_0=D(A_{0,H})$ is the same set for
+$\fra=1$ (\texttt{IsRealisation}), and \texttt{domain\_eq} proves $D(A_H(t))=D_0$.
+\texttt{domain\_one\_eq\_H2} identifies $D_0$ with $\Sob^2\cap\Sob^1_0$, the definition in the
+paper, where $v\in\Sob^2$ means that $v$ and its weak derivative have weak derivatives in $\Leb^2$
+(\texttt{MemH2}, Proposition~\ref{prop:sobolev}), and \texttt{domain\_eq\_H2} states
+$D(A_H(t))=\Sob^2\cap\Sob^1_0$ for every $t$.
+$\norm{A_H(t)}_{\cL(D_0,H)}<\infty$ is \texttt{exists\_bound\_on\_D₀}:
+$\norm{A_H(t)v}_H\leq C_t(\norm{v}_V+\norm{A_{0,H}v}_H)$, and \texttt{not\_uniform\_bound\_on\_D₀}
+says that no $C$ works for all $t\in[0,1]$.  The graph norm is taken with $\norm{v}_V$ in place of
+$\norm{v}_H$, an equivalent norm on $D_0$.
+
+\begin{proof}
+  \leanok
+  For fixed $t$, $\fra_t,\fra_t^{-1}\in\W^{1,\infty}$, and $A_H(t)v=-\fra_t\partial_x^2v-(\partial_x\fra_t)\partial_xv$,
+  $A_{0,H}v=\fra_t^{-1}(A_H(t)v+(\partial_x\fra_t)\partial_xv)$ in the weak sense, tested against
+  $\fra_t^{\pm1}w$.  For the blow-up, $A_H(t)\phi$ contains
+  $\eps\sum_m\eta_j\sin\theta_{j,m}\,p_{K_{j,m}}$ by Lemma~\ref{lem:coefficient-profile}, whose
+  norm in $H$ grows like $\eps\sqrt{M_j}$ on $J_j$ by orthogonality.
+\end{proof}

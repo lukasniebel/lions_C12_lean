@@ -1,0 +1,58 @@
+name: release-gate
+
+# The release gate (`scripts/audit.sh`) and the Comparator check of `Solution.lean` against
+# `Challenge.lean` (`scripts/verify-comparator.sh`), on every push to `main`, on pull requests,
+# and on demand.  The same commands are run locally.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: release-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install zstd
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq zstd
+
+      - name: Cache Lean toolchain and dependencies
+        uses: actions/cache@v6
+        with:
+          path: |
+            .toolchains
+            .lake/packages
+          key: lean-deps-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'scripts/bootstrap-lean.sh') }}
+
+      - name: Cache project build outputs
+        uses: actions/cache@v6
+        with:
+          path: .lake/build
+          key: lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'lakefile.toml') }}-${{ github.sha }}
+          restore-keys: |
+            lake-build-${{ hashFiles('lean-toolchain', 'lake-manifest.json', 'lakefile.toml') }}-
+
+      - name: Bootstrap Lean and the Mathlib cache
+        run: bash scripts/bootstrap-lean.sh
+
+      - name: Release gate
+        env:
+          LEAN_NUM_THREADS: 4
+        run: bash scripts/audit.sh
+
+      # Comparator builds and exports the project inside a bubblewrap sandbox, which needs
+      # unprivileged user namespaces; Ubuntu's AppArmor policy restricts them by default.
+      - name: Install bubblewrap
+        run: |
+          sudo apt-get install -y -qq bubblewrap
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0 || true
+
+      - name: Comparator
+        run: bash scripts/verify-comparator.sh

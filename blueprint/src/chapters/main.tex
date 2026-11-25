@@ -1,0 +1,195 @@
+The paper works with the complex Gelfand triple
+\[
+  V=\Sob_0^1((0,\pi);\CC)\hookrightarrow H=\Leb^2((0,\pi);\CC)\hookrightarrow V'=\Sob^{-1}((0,\pi);\CC),
+\]
+$V'$ the anti-dual of $V$, and with the form operators $\cA(t):V\to V'$ of a bounded real
+coefficient $\fra$.  This chapter introduces the objects of the statement layer
+(\texttt{LionsC12/Paper/Statement.lean}, repeated character for character in
+\texttt{Challenge.lean}) and states the two main results.  Everything is built from Mathlib: no
+Sobolev space, anti-dual or Bochner space is assumed.
+
+\section{The function spaces}
+
+\begin{definition}[The spaces $H$, $V$ and $V'$ on an open subset of the line]
+  \label{def:spaces}
+  \lean{LionsC12Challenge.L2, LionsC12Challenge.testGraph, LionsC12Challenge.H10Graph,
+    LionsC12Challenge.H10, LionsC12Challenge.val, LionsC12Challenge.dx,
+    LionsC12Challenge.Hm1, LionsC12Challenge.ofL2, LionsC12Challenge.ofH10}
+  \leanok
+  For an open $U\subseteq\R$, $\Leb^2(U;\CC)$ is Mathlib's $\Leb^2$ space of
+  $\mathrm{volume}|_U$.  $\Sob_0^1(U;\CC)$ is the closure, in the Hilbert product
+  $\Leb^2(U)\times\Leb^2(U)$ with norm $(\norm{v}^2+\norm{v'}^2)^{1/2}$, of the pairs
+  $(\varphi,\varphi')$ with $\varphi\in\C_c^1(\R;\CC)$, $\supp\varphi\subseteq U$ --- the graph
+  definition of $\Sob_0^1$ (Brezis).  The two projections are $v\mapsto v$ (\texttt{val}) and
+  $v\mapsto\partial_xv$ (\texttt{dx}).  $V'=\Sob^{-1}(U;\CC)$ is the space of continuous
+  conjugate-linear functionals on $V$, with its operator norm; $H\hookrightarrow V'$ is
+  $h\mapsto(w\mapsto\langle h,w\rangle_H)$ and $V\hookrightarrow V'$ is the composite.
+\end{definition}
+
+\textbf{Lean form.}  \texttt{H10 U} is a type synonym of the closed submodule
+\texttt{H10Graph U}, with its Hilbert-space structure declared explicitly; this avoids a
+type-class search that does not terminate for the anti-dual of a submodule.  The inner product
+of $V$ is $\langle v,w\rangle_H+\langle\partial_xv,\partial_xw\rangle_H$.
+
+\begin{definition}[The forms and the variational solutions]
+  \label{def:lions-solution}
+  \lean{LionsC12Challenge.form, LionsC12Challenge.HasWeakDeriv, LionsC12Challenge.IsLionsSolution}
+  \leanok
+  \uses{def:spaces}
+  For a coefficient $\fra:\R\times\R\to\R$,
+  \[
+    \fra(t)[v,w]=\int_U\fra(t,x)\,\partial_xv(x)\,\overline{\partial_xw(x)}\dd x
+    =\langle\cA(t)v,w\rangle_{V',V}.
+  \]
+  A function $g:(0,1)\to E$ is the distributional derivative of $u:(0,1)\to E$ if
+  $\int_0^1\varphi'u\dd t=-\int_0^1\varphi g\dd t$ for every real $\varphi\in\C_c^\infty(0,1)$.
+  A \emph{Lions variational solution} with zero initial value of $u'+\cA(t)u=f$ is a function
+  $w\in\Leb^2(0,1;V)$ whose $V'$-valued distributional derivative $w'$ lies in
+  $\Leb^2(0,1;V')$, such that $w'(t)+\cA(t)w(t)=f(t)$ in $V'$ for almost every $t$, and whose
+  continuous representative in $\C([0,1];V')$ vanishes at $t=0$.
+\end{definition}
+
+\textbf{Lean form.}  $\Leb^2(0,1;X)$ is \texttt{MemLp $\cdot$ 2 (volume.restrict (Ioo 0 1))},
+and the Bochner integrals are Mathlib's; the equation in $V'$ is tested against every $w\in V$.
+The initial condition is imposed on a representative \texttt{w₀} continuous on $[0,1]$ and equal
+to $w$ almost everywhere, which is how ``$w(0)=0$'' is read in $W(0,1)\subseteq\C([0,1];H)$.
+
+\begin{definition}[The spaces on a domain of $\R^d$]
+  \label{def:spaces-domain}
+  \lean{LionsC12Challenge.L2Ω, LionsC12Challenge.L2Ωvec, LionsC12Challenge.grad,
+    LionsC12Challenge.testGraphΩ, LionsC12Challenge.H10ΩGraph, LionsC12Challenge.H10Ω,
+    LionsC12Challenge.valΩ, LionsC12Challenge.gradΩ, LionsC12Challenge.Hm1Ω,
+    LionsC12Challenge.ofL2Ω, LionsC12Challenge.ofH10Ω, LionsC12Challenge.isoCoeff,
+    LionsC12Challenge.formΩ, LionsC12Challenge.IsLionsSolutionΩ}
+  \leanok
+  \uses{def:spaces, def:lions-solution}
+  For an open $\Omega\subseteq\R^d$ the same constructions with
+  $(\varphi,\nabla\varphi)\in\Leb^2(\Omega;\CC)\times\Leb^2(\Omega;\CC^d)$:
+  $H_\Omega=\Leb^2(\Omega;\CC)$, $V_\Omega=\Sob_0^1(\Omega;\CC)$, $V_\Omega'=\Sob^{-1}(\Omega;\CC)$, the
+  isotropic matrix $\frB(t,x)=\frb(t,x)\Id_d$ as a continuous linear map of $\R^d$, the form
+  $\frb(t)[v,w]=\int_\Omega\frb(t,x)\,\nabla v\cdot\overline{\nabla w}\dd x$, and the Lions
+  solutions of $U'-\Div(\frB\nabla U)=F$.
+\end{definition}
+
+\begin{proposition}[$\Sob_0^1$ through weak derivatives]
+  \label{prop:sobolev}
+  \lean{LionsC12.HasWeakDerivL2, LionsC12.W12Graph, LionsC12.isClosed_W12Graph,
+    LionsC12.hasWeakDerivL2_unique, LionsC12.H10Graph_le_W12Graph,
+    LionsC12.H10Graph_eq_closure_smoothGraph, LionsC12.range_H10toW12,
+    LionsC12.HasWeakGradL2, LionsC12.W12ΩGraph, LionsC12.isClosed_W12ΩGraph,
+    LionsC12.hasWeakGradL2_unique, LionsC12.H10ΩGraph_le_W12ΩGraph,
+    LionsC12.H10ΩGraph_eq_closure_smoothGraphΩ, LionsC12.range_H10ΩtoW12Ω}
+  \leanok
+  \uses{def:spaces, def:spaces-domain}
+  Let $U\subseteq\R$ be open, and let $\W^{1,2}(U)$ be the space of the pairs
+  $(v,g)\in\Leb^2(U)\times\Leb^2(U)$ with $\int_Uv\varphi'\dd x=-\int_Ug\varphi\dd x$ for every
+  real $\varphi\in\C_c^\infty(U)$, a closed subspace on which $g$ is determined by $v$.  Then
+  $\Sob_0^1(U)\subseteq\W^{1,2}(U)$, and $\Sob_0^1(U)$ is the closure of $\C_c^\infty(U)$ in
+  $\W^{1,2}(U)$.  The same holds on an open $\Omega\subseteq\R^d$, with weak gradients.
+\end{proposition}
+
+\textbf{Lean form.}  Not in the paper, which uses the textbook definitions; it identifies the
+graph definition of Definition~\ref{def:spaces} with them.  $\W^{1,2}(U)$ is the submodule
+\texttt{W12Graph U} of $\Leb^2(U)\times\Leb^2(U)$, with the norm $(\norm{v}^2+\norm{g}^2)^{1/2}$;
+the inclusion $V\hookrightarrow\W^{1,2}(U)$ is an isometry whose range is the closure of the
+graphs of the $\C_c^\infty(U)$ functions (\texttt{range\_H10toW12}).
+
+\begin{proof}
+  \leanok
+  The inclusion is integration by parts against the test graphs.  A $\C_c^1$ function supported in
+  $U$ is, with its derivative, the uniform limit on a fixed compact subset of $U$ of its
+  convolutions with smooth bumps of small radius, which are $\C_c^\infty$ functions supported in
+  $U$; uniform convergence on a set of finite measure gives convergence in $\Leb^2$.
+\end{proof}
+
+\section{The main results}
+
+\begin{theorem}[Counterexample on an interval]
+  \label{thm:main}
+  \lean{LionsC12.lions_counterexample_interval}
+  \leanok
+  \uses{def:lions-solution}
+  Let $\delta>0$.  There exists a bounded, uniformly elliptic, real-valued coefficient $\fra$ with
+  \[
+    \fra\in\C^{0,1/2}([0,1];\Leb^\infty(0,\pi)),\qquad
+    \norm{\fra-1}_{\C^{0,1/2}([0,1];\Leb^\infty(0,\pi))}<\delta,
+  \]
+  but $\fra\notin\C^{0,\alpha}([0,1];\Leb^\infty(0,\pi))$ for every $\frac12<\alpha<1$.  There also
+  exist a real-valued forcing $f\in\C([0,1];\Leb^2(0,\pi))\cap\Leb^2(0,1;\Leb^2(0,\pi))$ and a
+  real-valued $u\in\C([0,1];V)\cap\C^1([0,1];V')\cap\W^{1,1}(0,1;H)$ such that $u(0)=0$ and $u$
+  is the unique Lions variational solution of $\partial_tu(t)+\cA(t)u(t)=f(t)$ in $V'$ for every
+  $t\in[0,1]$.  Moreover $u(t)\in D(A_H(t))$ for every $t\in[0,1]$, and
+  \[
+    A_H(\cdot)u(\cdot)\in\Leb^1(0,1;H),\qquad A_H(\cdot)u(\cdot)\notin\Leb^2(0,1;H),\qquad
+    \partial_tu\notin\Leb^2(0,1;H).
+  \]
+\end{theorem}
+
+\textbf{Reading of the clauses in Lean.}  The statement is that of
+\texttt{LionsC12Challenge.lions\_counterexample\_interval} in \texttt{Challenge.lean}, proved in
+\texttt{Solution.lean} by \texttt{LionsC12.lions\_counterexample\_interval}.  The $\C^{0,1/2}$ norm is
+$\sup_t\norm{g(t)}+\sup_{s\neq t}\norm{g(t)-g(s)}/\abs{t-s}^{1/2}$, so the smallness is the
+existence of bounds $A,B\geq0$ for the two suprema with $A+B<\delta$; the $\Leb^\infty$ norms
+are \texttt{eLpNorm $\cdot$ ∞} on $(0,\pi)$.  $u\in\C^1([0,1];V')$ is the existence of a
+continuous $u'$ with \texttt{HasDerivWithinAt} at every $t\in[0,1]$, relative to $[0,1]$.
+$u\in\W^{1,1}(0,1;H)$ is Bochner integrability of $u$ in $H$ together with an integrable
+$H$-valued distributional derivative.  $D(A_H(t))$ is the set of $v\in V$ with $\cA(t)v\in H$.
+``$A_H(\cdot)u(\cdot)\notin\Leb^2$'' is asserted of \emph{every} $g$ with
+$\cA(t)u(t)=g(t)$ for all $t$, and ``$\partial_tu\notin\Leb^2(0,1;H)$'' says that no
+$g\in\Leb^2(0,1;H)$ represents $u'$ almost everywhere.  Real-valuedness of an element of
+$\Leb^2$ is the vanishing of its imaginary part almost everywhere.  Uniqueness is proved for
+every Lions solution in the sense of Definition~\ref{def:lions-solution}.
+
+\begin{proof}
+  \leanok
+  \uses{lem:oscillatory-modes, prop:coefficient, prop:holder-sharp, lem:solution-regularity,
+    prop:forcing, lem:lions-uniqueness, lem:domain-membership}
+  Take $\eps=\min\{1,\delta/(2(1+2C_\beta))\}$ and $\fra=1+\eps\beta$.
+  Proposition~\ref{prop:coefficient} gives the bounds $A=\eps/480$ and
+  $B=2\eps C_\beta$, Proposition~\ref{prop:holder-sharp} the failure of $\alpha$-H\"older
+  continuity, Lemma~\ref{lem:solution-regularity} the regularity of $u$ and
+  $\partial_tu\notin\Leb^2$, Proposition~\ref{prop:forcing} the forcing and the equation for
+  every $t$, Lemma~\ref{lem:domain-membership} the clauses on $A_H(\cdot)u(\cdot)$, and
+  Lemma~\ref{lem:lions-uniqueness} uniqueness.
+\end{proof}
+
+\begin{corollary}[Counterexamples on arbitrary bounded domains]
+  \label{cor:bounded-domains}
+  \lean{LionsC12.lions_counterexample_domain, LionsC12.lions_counterexample_open}
+  \leanok
+  \uses{def:spaces-domain}
+  Let $d\geq1$, let $\Omega\subset\R^d$ be a bounded domain and $\delta>0$.  There is a bounded
+  real scalar coefficient $\frb$ such that $\frB=\frb\Id_d$ is real symmetric, uniformly
+  elliptic, $\frB\in\C^{0,1/2}([0,1];\Leb^\infty(\Omega;\R^{d\times d}))$ with
+  $\norm{\frB-\Id_d}_{\C^{0,1/2}}<\delta$, and $\frB\notin\C^{0,\alpha}$ for every
+  $\frac12<\alpha<1$.  There are a real forcing $F\in\C([0,1];H_\Omega)\cap\Leb^2(0,1;H_\Omega)$
+  and a real $U\in\C([0,1];V_\Omega)\cap\C^1([0,1];V_\Omega')\cap\W^{1,1}(0,1;H_\Omega)$, in
+  particular in $\Leb^2(0,1;V_\Omega)\cap\Sob^1(0,1;V_\Omega')$, with $U(0)=0$, which is the unique
+  Lions variational solution of $U'(t)-\Div(\frB(t)\nabla U(t))=F(t)$ in $V_\Omega'$ for every
+  $t\in[0,1]$, but $U'\notin\Leb^2(0,1;H_\Omega)$ and
+  $-\Div(\frB\nabla U)\notin\Leb^2(0,1;H_\Omega)$.
+\end{corollary}
+
+\textbf{Lean form.}  The statement is that of
+\texttt{LionsC12Challenge.lions\_counterexample\_domain} in \texttt{Challenge.lean}, proved in
+\texttt{Solution.lean} by \texttt{LionsC12.lions\_counterexample\_domain}.  ``Bounded domain'' is a bounded non-empty open set; neither boundedness nor
+connectedness is used in the proof (\texttt{lions\_counterexample\_open}).  The matrix norm in $\Leb^\infty(\Omega;\R^{d\times d})$ is the operator norm of $\R^d$
+(every norm on $\R^{d\times d}$ gives the same space; for $\frb\Id_d-\frb'\Id_d$ the operator norm
+is $\abs{\frb-\frb'}$).  The clauses are read as in Theorem~\ref{thm:main}.
+
+\begin{proof}
+  \leanok
+  \uses{prop:line, prop:tensor, lem:domain-clauses, prop:holder-sharp,
+    lem:solution-regularity, lem:lions-uniqueness-domain}
+  Let $W$, $G$ be the solution and forcing on $\R^d$ of Proposition~\ref{prop:line} ($d=1$) or
+  Proposition~\ref{prop:tensor} ($d\geq2$), supported in a fixed compact set $K$ in space.
+  Choose $x_0$ and $0<r\leq1$ with $x_0+rK\Subset\Omega$, and put $s=r^{-2}t$,
+  $z=r^{-1}(x-x_0)$, $\frb(t,x)=\fra(s,z_1)$, $U(t,x)=W(s,z)$, $F(t,x)=r^{-2}G(s,z)$.  The
+  parabolic change of variables gives the equation; the support in $x_0+rK$ gives the
+  regularity in $V_\Omega$, $H_\Omega$ and $V_\Omega'$; the time rescaling gives
+  $\norm{\frB-\Id_d}_{\C^{0,1/2}}\leq Cr^{-1}\eps$, so $\eps$ is chosen small in terms of $r$ and
+  $\delta$; the failure of $\alpha$-H\"older continuity and
+  $\int_0^1\norm{U'}_{H_\Omega}^2=r^{d-2}\int_0^1\norm{\partial_sW}^2=\infty$ follow from
+  Proposition~\ref{prop:holder-sharp} and Lemma~\ref{lem:solution-regularity}.  Uniqueness is
+  Lemma~\ref{lem:lions-uniqueness-domain}.
+\end{proof}

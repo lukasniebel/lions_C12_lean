@@ -1,0 +1,36 @@
+#!/bin/sh
+set -eu
+
+project_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd -P)
+tool_dir="$project_root/.toolchains"
+lean_root="$tool_dir/lean-4.35.0-linux"
+ready_marker="$tool_dir/.lions-c12-ready"
+
+if [ "${LIONS_C12_BOOTSTRAPPING:-0}" != 1 ]; then
+  if [ ! -d "$tool_dir" ]; then
+    echo "local Lean is missing; run scripts/bootstrap-lean.sh first" >&2
+    exit 1
+  fi
+  exec 9>"$tool_dir/bootstrap.lock"
+  flock --shared 9
+  if [ ! -f "$ready_marker" ]; then
+    echo "local Lean setup is incomplete; run scripts/bootstrap-lean.sh" >&2
+    exit 1
+  fi
+fi
+
+if [ ! -x "$lean_root/bin/lake" ] || [ ! -f "$tool_dir/libproc_exe_shim.so" ]; then
+  echo "local Lean is missing; run scripts/bootstrap-lean.sh first" >&2
+  exit 1
+fi
+
+export LEAN_FAKE_APP_PATH="$lean_root/bin/lean"
+export LEAN_SYSROOT="$lean_root"
+export LD_PRELOAD="$tool_dir/libproc_exe_shim.so${LD_PRELOAD:+:$LD_PRELOAD}"
+export LD_LIBRARY_PATH="$lean_root/lib:$lean_root/lib/lean${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export MATHLIB_CACHE_DIR="$tool_dir/mathlib-cache"
+export CURL_HOME="$tool_dir/curl-home"
+: "${LEAN_NUM_THREADS:=1}"
+export LEAN_NUM_THREADS
+export PATH="$project_root/scripts:$lean_root/bin:$PATH"
+exec "$lean_root/bin/lake" "$@"

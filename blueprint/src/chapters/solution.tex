@@ -1,0 +1,49 @@
+With a second cutoff $\rho\in\C_c^\infty(0,1)$, $\rho=1$ on $[1/4,1/2]$, and
+\[
+  y_{j,m}(t)=-\frac{\eps}{2K_{j,m}^2}\eta_j(t)\bigl(\sin\theta_{j,m}(t)-\cos\theta_{j,m}(t)\bigr),
+  \qquad v=\sum_{j,m}y_{j,m}\,p_{K_{j,m}},\qquad u=\rho\phi+v,
+\]
+the functions $y_{j,m}$ solve $\partial_ty_{j,m}+K_{j,m}^2y_{j,m}=-\eps\eta_j\sin\theta_{j,m}+r_{j,m}$
+with $\abs{r_{j,m}}\leq C\eps K_{j,m}^{-2}\ell_j^{-1}$ (\texttt{eq:y-ode}, \texttt{eq:r-def}).
+
+\begin{definition}[The candidate solution]
+  \label{def:solution}
+  \lean{LionsC12.y, LionsC12.y', LionsC12.r, LionsC12.vblock, LionsC12.v, LionsC12.u,
+    LionsC12.ut, LionsC12.ux, LionsC12.uxx, LionsC12.uV, LionsC12.uV', LionsC12.utH}
+  \leanok
+  \uses{def:coefficient, def:modes}
+  The real functions $y_{j,m}$, $v$, $u$ with their classical derivatives in $t$ and $x$; $u(t)$ as
+  an element of $V$ (\texttt{uV}), the derivative of $t\mapsto u(t)\in V'$ (\texttt{uV'}) and
+  the time derivative $\partial_tu(t)\in H$ (\texttt{utH}).
+\end{definition}
+
+\begin{lemma}[Regularity and failure of $\Leb^2$-integrability of the time derivative]
+  \label{lem:solution-regularity}
+  \lean{LionsC12.continuous_uV, LionsC12.hasDerivAt_ofH10_uV, LionsC12.continuous_uV',
+    LionsC12.integrableOn_utH, LionsC12.hasWeakDeriv_val_uV, LionsC12.uV_zero,
+    LionsC12.not_integrableOn_utNormSq, LionsC12.not_memLp_utH,
+    LionsC12.not_exists_L2_rep_uV'}
+  \leanok
+  \uses{def:solution, lem:oscillatory-modes, lem:reciprocal-sums}
+  $u\in\C([0,1];V)\cap\C^1([0,1];V')\cap\W^{1,1}(0,1;H)$, $u(0)=0$, and
+  $\partial_tu\notin\Leb^2(0,1;H)$.
+\end{lemma}
+
+\textbf{Lean form.}  $u$ is continuous into $V$ on all of $\R$, and $t\mapsto u(t)\in V'$ has the
+derivative \texttt{uV'} at every $t\in\R$, continuous in $t$.  $\W^{1,1}(0,1;H)$ is
+Bochner integrability of $t\mapsto u(t)\in H$ and of $\partial_tu$, together with
+$\partial_tu$ being the $H$-valued distributional derivative.  ``$\partial_tu\notin\Leb^2$'' is
+\texttt{not\_exists\_L2\_rep\_uV'}: no $g\in\Leb^2(0,1;H)$ represents $u'$ almost everywhere.
+
+\begin{proof}
+  \leanok
+  On each block the sum is finite and smooth, $\abs{y_{j,m}}\leq C\eps K_{j,m}^{-2}$ and
+  $\abs{\partial_ty_{j,m}}\leq C\eps$, so by Lemma~\ref{lem:oscillatory-modes}
+  $\norm{v_j}_{\C(\R;V)}+\norm{\partial_tv_j}_{\C(\R;V')}\leq C\eps\sum_mK_{j,m}^{-1}\leq C\eps\ell_j$;
+  the series converge uniformly in $V$ and $V'$, which gives $u\in\C([0,1];V)\cap\C^1([0,1];V')$.
+  In $H$, $\norm{\partial_tv_j(t)}_H^2\leq C\eps^2M_j$ by orthogonality, so
+  $\norm{\partial_tv_j}_{\Leb^1(I_j;H)}\leq C\eps\ell_j\sqrt{M_j}$, which is summable.  On $J_j$,
+  $\partial_tu=-\frac\eps2\sum_m(\cos\theta_{j,m}+\sin\theta_{j,m})p_{K_{j,m}}$ and
+  $\int_{J_j}(\cos\theta_{j,m}+\sin\theta_{j,m})^2\geq\ell_j/6$, so
+  $\int_0^1\norm{\partial_tu}_H^2\geq\frac{\pi\eps^2}{96}\sum_jM_j\ell_j=\infty$.
+\end{proof}

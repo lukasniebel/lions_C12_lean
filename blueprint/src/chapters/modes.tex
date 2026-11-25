@@ -1,0 +1,64 @@
+The construction uses the profile $\phi(x)=\sin^2x$ and, for integers $K>2$, the modes
+\[
+  p_K(x)=\sin(Kx)\sin(2x)=\sin(Kx)\,\partial_x\phi(x),\qquad c_K(x)=\cos(Kx)\cos(2x).
+\]
+$\phi$, $p_K$ and their first derivatives vanish at $0$ and $\pi$
+(\texttt{eq:endpoint-conditions} of the paper).
+
+\begin{definition}[The profile and the modes]
+  \label{def:modes}
+  \lean{LionsC12.φ, LionsC12.φ', LionsC12.p, LionsC12.p', LionsC12.p'', LionsC12.c,
+    LionsC12.pV, LionsC12.φV}
+  \leanok
+  \uses{def:spaces}
+  The real functions $\phi$, $p_K$, $c_K$ and their derivatives, and $\phi$, $p_K$ as
+  elements of $V$ (they are $\C^1$ on $\R$ and vanish at $0$ and $\pi$; the zero extension
+  outside $[0,\pi]$ is $\C^1$, and a dilation towards the midpoint approximates it by
+  functions in $\C_c^1(0,\pi)$).
+\end{definition}
+
+\begin{lemma}[Oscillatory-mode identities]
+  \label{lem:oscillatory-modes}
+  \lean{LionsC12.lemma_2_1, LionsC12.normSq_p, LionsC12.normSq_c, LionsC12.normSq_p',
+    LionsC12.norm_p_Hm1_le, LionsC12.isRealisation_pV, LionsC12.inner_p_p,
+    LionsC12.inner_p_c', LionsC12.inner_c_p, LionsC12.inner_c_c}
+  \leanok
+  \uses{def:modes}
+  There is an absolute constant $C>0$ such that, for every integer $K>2$,
+  \[
+    \norm{p_K}_H^2=\norm{c_K}_H^2=\frac\pi4,\qquad
+    \norm{\partial_xp_K}_H^2=\frac\pi4(K^2+4),\qquad \norm{p_K}_{V'}\leq CK^{-1}.
+  \]
+  Moreover $A_{0,H}p_K=(K^2+4)p_K-4Kc_K$.  If $L\geq16K$, then
+  $\mathrm{span}\{p_K,c_K\}$ and $\mathrm{span}\{p_L,c_L\}$ are orthogonal in $H$.
+\end{lemma}
+
+\textbf{Lean form.}  The constant is $C=6$; the norm of $V'$ is the operator norm of the
+anti-dual of $V$ with the graph norm.  $A_{0,H}p_K=g$ is the statement that $p_K\in V$ and
+$\langle\partial_xp_K,\partial_xw\rangle_H=\langle g,w\rangle_H$ for every $w\in V$
+(\texttt{IsRealisation one 0}); this is the realisation in $H$ of the form operator.
+
+\begin{proof}
+  \leanok
+  Product-to-sum formulas reduce the norms and the orthogonality to the cosine integrals on
+  $(0,\pi)$.  For the dual norm, $P_K=\frac12\bigl(\frac{\sin((K-2)x)}{K-2}-\frac{\sin((K+2)x)}{K+2}\bigr)$
+  satisfies $P_K'=p_K$ and $P_K(0)=P_K(\pi)=0$, so
+  $\abs{\langle p_K,w\rangle}=\abs{\langle P_K,\partial_xw\rangle}\leq\norm{P_K}_H\norm{w}_V$ for
+  real $\C^1$ test functions, and the complex test functions and the closure are handled by real
+  and imaginary parts and continuity.  The formula for $A_{0,H}p_K$ is the differentiation of
+  $\sin(Kx)\sin(2x)$ and integration by parts in $V$.
+\end{proof}
+
+\begin{lemma}[The coefficient acting on the profile]
+  \label{lem:coefficient-profile}
+  \lean{LionsC12.hasDerivAt_coeff_profile}
+  \leanok
+  \uses{def:modes}
+  $L_{K^{-1}\cos(Kx)}\phi=p_K-2K^{-1}c_K$
+  (\texttt{eq:coefficient-profile-identity} of the paper).
+\end{lemma}
+
+\begin{proof}
+  \leanok
+  Differentiate $K^{-1}\cos(Kx)\,\partial_x\phi(x)$.
+\end{proof}

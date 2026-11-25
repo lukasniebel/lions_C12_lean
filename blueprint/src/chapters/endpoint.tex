@@ -1,0 +1,98 @@
+Let $X=\Leb^\infty(0,\pi)$.  The paper compares the construction with four sufficient conditions
+for maximal $\Leb^2$-regularity at the endpoint and deduces their failure from
+Theorem~\ref{thm:main}: if one of them held, the cited theorem would give maximal regularity.
+The cited theorems are not formalised.  The formalisation instead proves the failure of every
+hypothesis directly from the construction, which does not depend on the literature.
+
+\begin{lemma}[The operator norm of a form increment]
+  \label{lem:opnorm}
+  \lean{LionsC12.formOpDist, LionsC12.enorm_form_sub_le, LionsC12.formOpDist_le_eLpNorm,
+    LionsC12.exists_form_sub_ge_of_lt_eLpNorm, LionsC12.formOpDist_eq_eLpNorm,
+    LionsC12.formOpDist_a, LionsC12.aX, LionsC12.norm_aX_sub}
+  \leanok
+  \uses{def:lions-solution, def:coefficient}
+  For a bounded measurable coefficient on an interval $(a,b)$ with continuous increments,
+  $\norm{\cA(t)-\cA(s)}_{\cL(V,V')}=\norm{\fra(t)-\fra(s)}_{\Leb^\infty(a,b)}$.
+\end{lemma}
+
+\textbf{Lean form.}  The paper uses only the inequality $\leq$.  The operator norm is
+\texttt{formOpDist}, the supremum of
+$\abs{\fra(t)[v,w]-\fra(s)[v,w]}/(\norm{v}_V\norm{w}_V)$ over $v,w\neq0$, with the graph norm of
+$V$; no operator $V\to V'$ is constructed.  The path $t\mapsto\fra(t)\in X$ is \texttt{aX}, with
+values in Mathlib's $\Leb^\infty$.
+
+\begin{proof}
+  \leanok
+  The upper bound is H\"older's inequality.  For the lower bound, test with
+  $v=\psi((x-x_0)/h)$, a dilated smooth bump at a point where the increment is close to its
+  supremum, for which $\norm{\partial_xv}^2/\norm{v}_V^2\to1$ as $h\to0$.
+\end{proof}
+
+\begin{corollary}[Failure of the known sufficient hypotheses at the endpoint]
+  \label{cor:endpoint}
+  \lean{LionsC12.endpoint_hypotheses_fail, LionsC12.eVariationOn_aX_eq_top,
+    LionsC12.not_exists_dier_bound, LionsC12.not_exists_dini_form,
+    LionsC12.not_exists_dini_coeff, LionsC12.dini_form_lintegral_eq_top,
+    LionsC12.dini_coeff_lintegral_eq_top, LionsC12.gagliardoCoeff, LionsC12.gagliardoForm,
+    LionsC12.gagliardoForm_eq, LionsC12.gagliardoCoeff_eq_top,
+    LionsC12.exists_piece_gagliardo_eq_top, LionsC12.aeSquare,
+    LionsC12.not_exists_auscherEgert_bound, LionsC12.not_exists_auscherEgert_bound',
+    LionsC12.iSup_lintegral_formOpDist_sq_div_le, LionsC12.exists_partition_local_smallness,
+    LionsC12.form_self_re_equiv}
+  \leanok
+  \uses{lem:opnorm, prop:coefficient, prop:holder-sharp}
+  For the coefficient of Theorem~\ref{thm:main}:
+  \begin{enumerate}
+    \item the form does not have bounded variation in the sense of Dier, and
+      $\fra\notin BV([0,1];X)$;
+    \item there is no non-decreasing $\omega:[0,1]\to[0,\infty)$ with
+      $\abs{\langle(\cA(t)-\cA(s))v,w\rangle}\leq\omega(\abs{t-s})\norm{v}_V\norm{w}_V$ for
+      $s,t\in[0,1]$ and $\int_0^1\omega(r)r^{-3/2}\dd r<\infty$ (Haak--Ouhabaz); in particular no
+      such modulus controls $\norm{\fra(t)-\fra(s)}_X$;
+    \item neither $\cA:[0,1]\to\cL(V,V')$ nor $\fra:[0,1]\to X$ is piecewise $\Sob^{1/2}$ on any
+      finite partition (Achache--Ouhabaz);
+    \item there is no $M<\infty$ with
+      $\sup_{I}\abs{I}^{-1}\iint_{I\times I}\abs{\fra(t,x)-\fra(s,x)}^2/\abs{t-s}^2\dd s\dd t\leq M$
+      for a.e.\ $x\in(0,\pi)$ (Auscher--Egert, condition (8)).
+  \end{enumerate}
+  Moreover the two side conditions of Achache--Ouhabaz hold: the local smallness
+  $\sup_{t\in I}\int_I\norm{\cA(t)-\cA(s)}^2_{\cL(V,V')}\abs{t-s}^{-1}\dd s\leq C\eps^2\abs{I}$, and the
+  uniform equivalence $\re\fra(t)[v,v]\simeq\norm{v}_V^2$.
+\end{corollary}
+
+\textbf{Lean form.}  The statement is \texttt{endpoint\_hypotheses\_fail}, for every
+$0<\eps\leq1$.  (i) is \texttt{eVariationOn} of the path \texttt{aX} on $[0,1]$, equal to
+$\infty$, and the absence of a function $g$, monotone on $[0,1]$, with Dier's estimate.  (ii)
+reads ``$\int_0^1\omega(r)r^{-3/2}\dd r<\infty$'' as finiteness of the lower Lebesgue integral of
+$\omega(r)r^{-3/2}$ on $(0,1)$; the stronger versions
+\texttt{dini\_form\_lintegral\_eq\_top}, \texttt{dini\_coeff\_lintegral\_eq\_top} say that the
+integral is $\infty$ for every admissible monotone $\omega$.  (iii) says that every partition
+$0=t_0<\dots<t_N=1$ has a piece $(t_k,t_{k+1})$ on which the Gagliardo seminorm
+$\iint\norm{\fra(t)-\fra(s)}_X^2\abs{t-s}^{-2}$ (and the same for $\cA$, Lemma~\ref{lem:opnorm}) is
+infinite; only the seminorm of the $\Sob^{1/2}$ norm is used, and the piece is the one containing
+the accumulation time $5/16$.  (iv) has the supremum over open intervals $(p,q)\subseteq[0,1]$
+inside the almost-everywhere quantifier, as in the paper; \texttt{not\_exists\_auscherEgert\_bound'}
+excludes even the weaker hypothesis in which the exceptional null set may depend on the interval.  The local smallness constant is
+$C=4C_\beta^2$.  The form equivalence is stated with $\norm{\partial_xv}_H$ in place of
+$\norm{v}_V$ (the two are equivalent by Poincar\'e's inequality, which is not formalised for
+$V$; the upper bound in the graph norm is \texttt{norm\_form\_a\_le}); the operator square root of
+the Kato property is not formalised.  The theorems of Dier, Haak--Ouhabaz, Achache--Ouhabaz and
+Auscher--Egert are not formalised.
+
+\begin{proof}
+  \leanok
+  This is the argument Lean states, not the paper's, which deduces (i)--(iv) from the cited
+  theorems and Theorem~\ref{thm:main}.  On the middle third $J_j$ of a block, the increment of
+  $\fra(\cdot,0)$ over a quarter period of the first mode is at least $\frac{13}{15}\eps K_{j,1}^{-1}$;
+  $3K_{j,1}$ such steps fit in $J_j$, so each block contributes at least $\eps$ to the variation,
+  which proves (i), and Dier's estimate would bound it.  For (ii), on the pieces
+  $(h_{j+1},h_j]$ of the scales $h_j=\pi/(2K_{j,1}^2)$, monotonicity gives
+  $\omega(r)r^{-3/2}\geq\omega(h_{j+1})h_j^{-3/2}$, each piece contributes at least $c/(j+2)$, and the
+  harmonic series diverges.  For (iii) and (iv), on rectangles $T\times S\subseteq J_j\times J_j$
+  where the phase of the first mode lies in $[\pi/4,3\pi/4]$ and in $[5\pi/4,7\pi/4]$, the
+  squared difference quotient of $\sin K^2(\cdot-\tau_j)$ integrates to at least
+  $K^2\abs{J_j}/(36\pi)$, which, after the factor $\eps^2K^{-2}$, is $\geq c\eps^2\ell_j$ per block
+  on a set of length $\ell_j$, hence unbounded after division by $\abs{I}$ and infinite in sum; (iv)
+  integrates over $x$ by Tonelli.  Local smallness is
+  Proposition~\ref{prop:coefficient} with Lemma~\ref{lem:opnorm}.
+\end{proof}
