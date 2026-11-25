@@ -90,6 +90,19 @@ jobs:
           mkdir -p docbuild
           cp lean-toolchain docbuild/lean-toolchain
 
+      # The API documentation is built for every Mathlib module, several jobs in parallel; on a
+      # standard runner Lake's `git` subprocesses (doc-gen4's `srcUri.github` facets) then fail
+      # with "resource exhausted (error code: 12, not enough memory)".  Let the kernel overcommit
+      # instead of refusing the fork, and add swap for the peak.
+      - name: Memory for the documentation build
+        run: |
+          sudo sysctl -w vm.overcommit_memory=1
+          sudo fallocate -l 8G /docgen.swap
+          sudo chmod 600 /docgen.swap
+          sudo mkswap /docgen.swap
+          sudo swapon /docgen.swap
+          free -h
+
       - name: Blueprint, declaration check, API documentation
         uses: leanprover-community/docgen-action@deed0cdc44dd8e5de07a300773eb751d33e32fc8 # 2025-10-26
         with:
