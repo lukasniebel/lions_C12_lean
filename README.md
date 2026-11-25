@@ -236,9 +236,9 @@ paragraph **Lean form** after the node says how.  Every node is formalised.
 To build it, install `leanblueprint` (it needs a TeX distribution and Graphviz) and run
 `leanblueprint web` or `leanblueprint pdf` from the repository root.  The release gate checks that
 every declaration cited in the blueprint exists in the built library.  The workflow
-[`.github/workflows/blueprint.yml`](.github/workflows/blueprint.yml), run manually, builds the
-blueprint and the API documentation and assembles them with [`home_page/`](home_page/) into the
-`documentation-site` artifact of the run.
+[`.github/workflows/blueprint.yml`](.github/workflows/blueprint.yml), run on every push to `main`,
+builds the blueprint (web and pdf) and the API documentation and assembles them with
+[`home_page/`](home_page/) into the `documentation-site` artifact of the run; nothing is deployed.
 
 ## How this was built
 

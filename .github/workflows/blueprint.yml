@@ -6,11 +6,13 @@ name: blueprint
 # Actions artifact of the run (`documentation-site`); nothing is deployed.
 # The release gate (`audit.yml`) also checks the cited declarations.
 #
-# Manual only: one run of this workflow builds the whole library (about an
-# hour on four cores).  Start it by hand from the Actions tab when a fresh documentation
-# artifact is wanted.
+# Runs on every push to `main` and on demand.  The API documentation is built only
+# on push events: the documentation action skips that step for other triggers, so a
+# manual run produces the blueprint and the declaration check but no API docs.
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 concurrency:
