@@ -6,6 +6,10 @@
 \usepackage{amssymb, amsthm, mathtools}
 \usepackage[unicode,colorlinks=true,linkcolor=blue,urlcolor=magenta, citecolor=blue]{hyperref}
 \usepackage[warnings-off={mathtools-colon,mathtools-overbracket}]{unicode-math}
+% Lean names in \texttt contain subscript digits and letterlike symbols (`D₀`, `ℝ`) that Latin
+% Modern Mono lacks; DejaVu Sans Mono, shipped with TeX Live, has them.
+\setmonofont{DejaVuSansMono}[Extension=.ttf, UprightFont=*, BoldFont=*-Bold,
+  ItalicFont=*-Oblique, BoldItalicFont=*-BoldOblique, Scale=MatchLowercase]
 
 \input{macros/common}
 \input{macros/print}
