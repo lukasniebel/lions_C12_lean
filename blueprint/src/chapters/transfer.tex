@@ -17,7 +17,7 @@ on $(0,1)\times(0,\pi)$, and for almost every $t$, $q(t,\cdot)$ is the primitive
 $x\mapsto\int_0^x\partial_xq(t,y)\dd y$ on $[0,\pi]$ (the absolutely continuous representative with
 $q(t,0)=0$) with $q(t,\pi)=0$; this is $\Leb^1(0,1;\W^{1,1}(0,\pi))$, which contains
 $\Leb^1(0,1;\Sob^1(0,\pi))$.  The identity is
-$\int_0^1\!\int_\R E_0q\,\partial_x\psi=-\int_0^1\!\int_\R E_0(\partial_xq)\,\psi$ for every $\psi$ that is
+$\int_0^1\!\int_{\R} E_0q\,\partial_x\psi=-\int_0^1\!\int_{\R} E_0(\partial_xq)\,\psi$ for every $\psi$ that is
 $\C^1$ in $x$, which contains the test functions of $\mathcal D'((0,1)\times\R)$.
 
 \begin{proof}
@@ -32,7 +32,7 @@ $\C^1$ in $x$, which contains the test functions of $\mathcal D'((0,1)\times\R)$
   \leanok
   \uses{lem:zero-extension-flux, lem:cancellation}
   For every $t$, the zero extensions $\widetilde u=E_0u$ and $\widetilde f=E_0f$ satisfy
-  $\int_\R\fra\,\partial_x\widetilde u\,\overline{\psi'}=\int_\R(\widetilde f-\partial_t\widetilde u)\overline\psi$ for every
+  $\int_{\R}\fra\,\partial_x\widetilde u\,\overline{\psi'}=\int_{\R}(\widetilde f-\partial_t\widetilde u)\overline\psi$ for every
   $\psi\in\C^1(\R)$ with no boundary condition, also after the parabolic rescaling
   $(t,x)\mapsto(t/r^2,(x-x_0)/r)$.
 \end{lemma}
